@@ -97,8 +97,8 @@ def log_activity(email, company_name, stock_data):
 
     with open(USER_ACTIVITY_LOG_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([date_str,  time_str,  email,  company_name,  stock_data['symbol'],  stock_data['currentPrice'], 
-                          stock_data['openPrice'],  stock_data['highPrice'],  stock_data['lowPrice'],  stock_data['previousClose'],  stock_data['volume']])
+        writer.writerow([date_str, time_str, email, company_name, stock_data['symbol'], stock_data['currentPrice'], 
+                         stock_data['openPrice'], stock_data['highPrice'], stock_data['lowPrice'], stock_data['previousClose'], stock_data['volume']])
 
 def fetch_stock_data(ticker):
     url = f'https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol={ticker}&interval=1min&apikey=2LYW83QDKHE80TXV'
@@ -152,19 +152,13 @@ def main():
 
         if choice == "1":
             email = input("Enter your email: ")
-
-            # Validate email format
             if not validate_email(email):
                 print("Invalid email format. Please try again.")
-                continue  # Ask again for a valid email
-
+                continue
             password = input("Enter your password: ")
-
-            # Validate password format
             if not validate_password(password):
                 print("Invalid password format. Password must be at least 8 characters long and contain at least one special character.")
-                continue  # Ask again for valid password
-
+                continue
             security_question = input("Enter a security question: ")
             correct_answer = input("Enter the answer to the security question: ")
             signup(email, password, security_question, correct_answer)
@@ -172,18 +166,14 @@ def main():
 
         elif choice == "2":
             email = input("Enter your email: ")
-
-            # Validate email format
             if not validate_email(email):
                 print("Invalid email format. Please try again.")
-                continue  # Ask again for a valid email
-
+                continue
             try:
                 with open(REGNO_FILE_PATH, mode='r') as file:
                     reader = csv.reader(file)
                     for row in reader:
                         if row[0] == email:
-                            # If email exists, provide login option
                             login_attempts = 0
                             while login_attempts < 5:
                                 password = input("Enter your password: ")
@@ -200,13 +190,13 @@ def main():
                                 if reset_choice.lower() == 'yes':
                                     if reset_password(email):
                                         print("Password reset successful. Please log in again.")
-                                        main()  # Restart main function
+                                        main()
                                     else:
                                         print("Password reset failed.")
                                 else:
                                     print("Exiting application.")
                                     return
-                            return  # Exit the function after failed login attempts
+                            return 
                     else:
                         print("New user, please sign up first.")
             except FileNotFoundError:
@@ -214,15 +204,20 @@ def main():
 
         elif choice == "3":
             email = input("Enter your email for password reset: ")
-
-            # Validate email format
             if not validate_email(email):
                 print("Invalid email format. Please try again.")
-                continue  # Ask again for a valid email
-
+                continue
             reset_password(email)
         else:
             print("Invalid choice. Please enter 1, 2, or 3.")
 
 if __name__ == "__main__":
     main()
+#  I have made this project in google collab. And both the csv files regno.csv which contains login details and 
+#  user_activity_log.csv which contains the log details are created inside the collab environment.
+#  To download and check these files in local use this snippet:
+
+
+#from google.colab import files
+#files.download('regno.csv')
+#files.download('user_activity_log.csv')
