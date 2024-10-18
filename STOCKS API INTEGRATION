@@ -3,6 +3,7 @@ import re
 import hashlib
 import requests
 from datetime import datetime
+import pytz 
 import sys
 
 REGNO_FILE_PATH = 'regno.csv'
@@ -32,9 +33,14 @@ def hash_password(password):
 
 def signup(email, password, security_question, correct_answer):
     hashed_password = hash_password(password)
+    ist = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(ist)
+    date_str = now.strftime("%Y-%m-%d")
+    time_str = now.strftime("%H:%M:%S")
+
     with open(REGNO_FILE_PATH, mode='a', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow([email, hashed_password, security_question, correct_answer])
+        writer.writerow([email, hashed_password, security_question, correct_answer, date_str, time_str])
     print("Signup successful!")
 
 def login(email, password):
@@ -91,7 +97,8 @@ def update_password(email, new_password):
         writer.writerows(rows)
 
 def log_activity(email, company_name, stock_data):
-    now = datetime.now()
+    ist = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(ist)
     date_str = now.strftime("%Y-%m-%d")
     time_str = now.strftime("%H:%M:%S")
 
@@ -142,12 +149,13 @@ def application_functionality(email):
         print("Company not found.")
 
 def main():
-    print("--------------------------Welcome to the word of STOCKS!!-------------------------")
+    print("--------------------------Welcome to the world of STOCKS!!-------------------------")
     while True:
         print("Choose an option:")
         print("1. Signup")
         print("2. Login")
         print("3. Reset Password")
+        print("4. Exit")
         choice = input("Enter your choice: ")
 
         if choice == "1":
@@ -162,7 +170,6 @@ def main():
             security_question = input("Enter a security question: ")
             correct_answer = input("Enter the answer to the security question: ")
             signup(email, password, security_question, correct_answer)
-            print("Signup successful!")
 
         elif choice == "2":
             email = input("Enter your email: ")
@@ -208,16 +215,21 @@ def main():
                 print("Invalid email format. Please try again.")
                 continue
             reset_password(email)
+
+        elif choice == "4":
+            print("Exiting application. Goodbye!")
+            sys.exit()
+
         else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
+            print("Invalid choice. Please enter 1, 2, 3, or 4.")
 
 if __name__ == "__main__":
     main()
+
 #  I have made this project in google collab. And both the csv files regno.csv which contains login details and 
 #  user_activity_log.csv which contains the log details are created inside the collab environment.
 #  To download and check these files in local use this snippet:
 
-
-#from google.colab import files
-#files.download('regno.csv')
-#files.download('user_activity_log.csv')
+# from google.colab import files
+# files.download('regno.csv')
+# files.download('user_activity_log.csv')
